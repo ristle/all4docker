@@ -1,0 +1,9 @@
+numpy
+cython==0.27.3
+pytest-timeout
+pytest-xdist
+pytest-env
+pytest-faulthandler
+Pillow
+mpmath
+matplotlib

@@ -1,0 +1,247 @@
+===========
+ Reference
+===========
+
+.. class:: pylibmc.Client(servers[, binary=False, username=None, password=None, behaviors=None])
+
+   Interface to a set of memcached servers.
+
+   *servers* is a sequence of strings specifying the servers to use.
+
+   *binary* specifies whether or not to use the binary protocol to talk to the
+   memcached servers.
+
+   *username* and *password* are credentials for SASL authentication. It requires support
+   in libmemcached, and binary=True. Test for local support with pylibmc.support_sasl.
+
+   *behaviors*, if given, is passed to :meth:`Client.set_behaviors` after
+   initialization.
+
+   Supported transport mechanisms are TCP, UDP and UNIX domain sockets. The
+   default transport type is TCP.
+
+   To specify UDP, the server address should be prefixed with ``"udp:"``, as in
+   ``"udp:127.0.0.1"``.
+
+   To specify UNIX domain socket, the server address must start with a slash, as
+   in ``"/run/foo.sock"``.
+
+   Mixing transport types is prohibited by :mod:`pylibmc` as this is not supported by
+   libmemcached.
+
+   .. method:: clone() -> clone
+
+      Clone client, making new connections as necessary.
+
+   .. Reading
+
+   .. method:: get(key[, default]) -> value
+
+      Get *key* if it exists, otherwise *default*. If *default* is not given,
+      it defaults to ``None``.
+
+   .. method:: get_multi(keys[, key_prefix=None]) -> values
+
+      Get each of the keys in sequence *keys*.
+      
+      If *key_prefix* is given, specifies a string to prefix each of the values
+      in *keys* with.
+
+      Returns a mapping of each unprefixed key to its corresponding value in
+      memcached. If a key doesn't exist, no corresponding key is set in the
+      returned mapping.
+
+   .. Writing
+
+   .. method:: set(key, value[, time=0, min_compress_len=0, compress_level=-1]) -> success
+
+      Set *key* to *value*.
+
+      :param key: Key to use
+      :param value: Value to set
+      :param time: Time until expiry
+      :param min_compress_len: Minimum length before compression is triggered
+
+      If *time* is given, it specifies the number of seconds until *key* will
+      expire. Default behavior is to never expire (equivalent of specifying
+      ``0``).
+
+      If *min_compress_len* is given, it specifies the maximum number of actual
+      bytes stored in memcached before compression is used. Default behavior is
+      to never compress (which is what ``0`` means). See :ref:`compression`.
+
+      If *compress_level* is given, it specifies the compression level for the
+      data. It accepts the same values as the :mod:`zlib` family, for which
+      `zlib.Z_BEST_SPEED` and `zlib.Z_BEST_COMPRESSION` are commonly used
+      constants. It accepts values between [0, 9] inclusively.
+
+   .. method:: set_multi(mapping[, time=0, key_prefix=None, min_compress_len, compress_level]) -> failed_keys
+
+      Set multiple keys as given by *mapping*.
+
+      If *key_prefix* is specified, each of the keys in *mapping* is prepended
+      with this value.
+
+      Returns a list of keys which were not set for one reason or another,
+      without their optional key prefix.
+
+   .. method:: add(key, value[, time, min_compress_len, compress_level]) -> success
+
+      Sets *key* if it does not exist.
+
+      .. seealso:: :meth:`set`, :meth:`replace`
+
+   .. method:: replace(key, value[, time, min_compress_len, compress_level]) -> success
+
+      Sets *key* only if it already exists.
+
+      .. seealso:: :meth:`set`, :meth:`add`
+
+   .. method:: append(key, value) -> success
+
+      Append *value* to *key* (i.e., ``m[k] = m[k] + v``).
+
+      .. note:: Uses memcached's appending support, and therefore should never
+                be used on keys which may be compressed or non-string values.
+
+   .. method:: prepend(key, value) -> success
+
+      Prepend *value* to *key* (i.e., ``m[k] = v + m[k]``).
+
+      .. note:: Uses memcached's prepending support, and therefore should never
+                be used on keys which may be compressed or non-string values.
+
+   .. method:: incr(key[, delta=1]) -> value
+
+      Increment value at *key* by *delta*.
+
+      Returns the new value for *key*, after incrementing.
+
+      Works for both strings and integer types.
+
+      .. note:: There is currently no way to set a default for *key* when
+                incrementing.
+
+   .. method:: decr(key[, delta=1]) -> value
+
+      Decrement value at *key* by *delta*.
+
+      Returns the new value for *key*, after decrementing.
+
+      Works for both strings and integer types, but will never decrement below
+      zero.
+
+      .. note:: There is currently no way to set a default for *key* when
+                decrementing.
+
+   .. Atomic operations
+
+   .. method:: gets(key) -> (value, cas_id)
+
+      Get *key* and its compare-and-swap ID if it exists, otherwise ``(None,
+      None)``.
+
+      The so-called CAS token or ID is used with :meth:`cas` to update a value
+      with the guarantee that no other value was written in between.
+
+      .. seealso:: :meth:`get`, :meth:`cas`
+
+   .. method:: cas(key, value, cas[, time=0]) -> swapped
+
+      Set *key* to *value* if *key* CAS token is *cas*.
+
+      :param key: Key to use
+      :param value: Value to set
+      :param cas: Compare-and-swap token from :meth:`gets`
+      :param time: Time until expiry
+
+      If *time* is given, it specifies the number of seconds until *key* will
+      expire. Default behavior is to never expire (equivalent of specifying
+      ``0``).
+
+   .. Deleting
+
+   .. method:: delete(key) -> deleted
+
+      Delete *key* if it exists.
+
+      Returns ``True`` if the key was deleted, ``False`` otherwise (as is the case if
+      it wasn't set in the first place.)
+
+   .. method:: delete_multi(keys[, key_prefix=None]) -> deleted
+
+      Delete each of key in the sequence *keys*.
+
+      :param keys: Sequence of keys to delete
+      :param key_prefix: Prefix for the keys to delete
+
+      Returns ``True`` if all keys were successfully deleted, ``False``
+      otherwise (as is the case if it wasn't set in the first place.)
+
+   .. method:: touch(key, time) -> touched
+
+      Touch a given *key* and increase it's expiry time by *time* seconds.
+
+      :param key: Key to touch
+      :param time: Number of seconds until the key expires.
+
+      Returns ``True`` if the key was successfully touched. ``False``
+      if the key did not exist.
+
+   .. Utilities
+
+   .. method:: disconnect_all()
+
+      Disconnect from all servers and reset internal state.
+
+      Exposed mainly for compatibility with python-memcached, as there really
+      is no logical reason to do this.
+
+   .. method:: flush_all() -> success
+
+      Flush all data from all servers.
+      
+      .. note:: This clears the specified memcacheds fully and entirely.
+
+   .. method:: get_stats() -> [(name, stats), ...]
+
+      Retrieve statistics from each of the connected memcached instances.
+
+      Returns a list of two-tuples of the format ``(name, stats)``.
+      
+      *stats* is a mapping of statistics item names to their values. Whether or
+      not a key exists depends on the version of libmemcached and memcached
+      used.
+
+   .. method:: serialize(value) -> bytestring, flag
+
+      Serialize a Python value to bytes *bytestring* and an integer *flag* field
+      for storage in memcached. The default implementation has special cases
+      for bytes, ints/longs, and bools, and falls back to pickle for all other
+      objects. Override this method to use a custom serialization format, or
+      otherwise modify the behavior.
+
+      *flag* is exposed by the memcached protocol. It adds flexibility
+      in terms of encoding schemes: for example, objects *a* and *b* of
+      different types may coincidentally encode to the same *bytestring*,
+      just so long as they encode with different values of *flag*. If distinct
+      values always encode to different byte strings (for example, when
+      serializing all values with pickle), *flag* can simply be set to a
+      constant.
+
+   .. method:: deserialize(bytestring, flag) -> value
+
+      Deserialize *bytestring*, stored with *flag*, back to a Python object.
+      Override this method (in concert with ``serialize``) to use a custom
+      serialization format, or otherwise modify the behavior.
+
+      Raise ``CacheMiss`` in order to simulate a cache miss for the relevant
+      key, i.e., ``get`` will return None and ``get_multi`` will omit the key
+      from the returned mapping. This can be used to recover gracefully from
+      version skew (e.g., retrieving a value that was pickled by a different,
+      incompatible code version).
+
+   .. data:: behaviors
+
+      The behaviors used by the underlying libmemcached object. See
+      :ref:`behaviors` for more information.

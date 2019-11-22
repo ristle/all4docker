@@ -1,0 +1,11 @@
+*.pyc
+*.pyo
+.DS_Store
+docs/_build
+build
+dist
+tmp
+.tox
+MANIFEST
+sendapatch.se
+*.swp

@@ -1,0 +1,11 @@
+{"message": "BaseRepository.load  ignite repo loading completed.", "level": "INFO", "object": {}, "@timestamp": "2019-10-10T17:47:01.720606Z", "@version": "0", "team": "NLP_ENGINE", "application": "sb900-ai"}
+{"message": "BaseRepository.load  kafka repo loading completed.", "level": "INFO", "object": {}, "@timestamp": "2019-10-10T17:47:01.733191Z", "@version": "0", "team": "NLP_ENGINE", "application": "sb900-ai"}
+{"message": "BaseRepository.load  logger repo loading completed.", "level": "INFO", "object": {}, "@timestamp": "2019-10-10T17:47:01.741412Z", "@version": "0", "team": "NLP_ENGINE", "application": "sb900-ai"}
+{"message": "BaseRepository.load  ai_settings repo loading completed.", "level": "INFO", "object": {}, "@timestamp": "2019-10-10T17:47:01.751760Z", "@version": "0", "team": "NLP_ENGINE", "application": "sb900-ai"}
+{"message": "BaseRepository.load  monitoring repo loading completed.", "level": "INFO", "object": {}, "@timestamp": "2019-10-10T17:47:01.773099Z", "@version": "0", "team": "NLP_ENGINE", "application": "sb900-ai"}
+{"message": "BaseRepository.load  health_check repo loading completed.", "level": "INFO", "object": {}, "@timestamp": "2019-10-10T17:47:01.806228Z", "@version": "0", "team": "NLP_ENGINE", "application": "sb900-ai"}
+{"message": "BaseRepository.load  ssh repo loading completed.", "level": "INFO", "object": {}, "@timestamp": "2019-10-10T17:47:01.819266Z", "@version": "0", "team": "NLP_ENGINE", "application": "sb900-ai"}
+{"message": "BaseRepository.load  ceph repo loading completed.", "level": "INFO", "object": {}, "@timestamp": "2019-10-10T17:47:01.831008Z", "@version": "0", "team": "NLP_ENGINE", "application": "sb900-ai"}
+{"message": "BaseRepository.load  external_requests repo loading completed.", "level": "INFO", "object": {}, "@timestamp": "2019-10-10T17:47:01.840013Z", "@version": "0", "team": "NLP_ENGINE", "application": "sb900-ai"}
+{"message": "BaseRepository.load  channels_repository repo loading completed.", "level": "INFO", "object": {}, "@timestamp": "2019-10-10T17:47:01.849742Z", "@version": "0", "team": "NLP_ENGINE", "application": "sb900-ai"}
+{"message": "BaseRepository.load  logger repo loading completed.", "level": "INFO", "object": {}, "@timestamp": "2019-10-10T17:47:01.918760Z", "@version": "0", "team": "NLP_ENGINE", "application": "sb900-ai"}
